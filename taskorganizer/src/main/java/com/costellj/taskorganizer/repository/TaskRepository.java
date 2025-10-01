@@ -1,7 +1,9 @@
 package com.costellj.taskorganizer.repository;
 
-import com.costellj.taskorganizer.Task;
 import org.springframework.stereotype.Repository;
+
+import com.costellj.taskorganizer.model.Task;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository

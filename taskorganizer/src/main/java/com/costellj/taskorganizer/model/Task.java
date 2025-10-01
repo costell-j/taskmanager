@@ -1,4 +1,4 @@
-package com.costellj.taskorganizer;
+package com.costellj.taskorganizer.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
