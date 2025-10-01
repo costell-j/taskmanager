@@ -20,10 +20,12 @@
                 <td th:text="${task.title}"></td>
                 <td th:text="${task.completed}"></td>
                 <td>
-                    <form th:action="@{'/api/tasks/' + ${task.id}}" method="post" style="display:inline">
-                        <input type="hidden" name="_method" value="delete" />
+                    <form action="/tasks/delete" method="post">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type="hidden" name="id" value="${task.id}">
                         <button type="submit">Delete</button>
                     </form>
+                    
                 </td>
             </tr>
             
