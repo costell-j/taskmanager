@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
     private final TaskRepository taskRepository;
@@ -49,11 +49,11 @@ public class TaskController {
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
     
-
-public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-    return taskRepository.findById(id)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        return taskRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -23,11 +23,11 @@ public class TaskWebController {
 
     @GetMapping("/tasks/new")
     public String showTaskForm(Model model) {
-        model.addAttribute("task", new Task()); // fixed
+        model.addAttribute("task", new Task());
         return "task-form";
     }
 
-    @PostMapping("/tasks")
+    @PostMapping("/tasks/web")
     public String saveTask(@ModelAttribute Task task) {
         taskRepository.save(task);
         return "redirect:/tasks";
@@ -58,11 +58,6 @@ public class TaskWebController {
         taskRepository.deleteById(id);
         return "redirected:/tasks";
     }
-    
-    
-
-
-    
     
 }
 
