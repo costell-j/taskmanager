@@ -2,58 +2,75 @@ package com.costellj.taskorganizer.controller;
 
 import com.costellj.taskorganizer.model.Task;
 import com.costellj.taskorganizer.repository.TaskRepository;
-
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/tasks")
+@Controller
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskRepository taskRepository;
 
     public TaskController(TaskRepository taskRepository) {
-       this.taskRepository = taskRepository;
+        this.taskRepository = taskRepository;
     }
 
+    // List all tasks
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public String listTasks(Model model) {
+        model.addAttribute("tasks", taskRepository.findAll());
+        return "task-list";
     }
 
+    // Show add form
+    @GetMapping("/new")
+    public String showAddForm(Model model) {
+        model.addAttribute("task", new Task());
+        return "task-form";
+    }
+
+    // Add new task
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskRepository.save(task);
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
-        return taskRepository.findById(id).map(task -> {
-            task.setTitle(updatedTask.getTitle());
-            task.setCompleted(updatedTask.isCompleted());
-            taskRepository.save(task);
-            return ResponseEntity.ok(task);
-        })
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    public String saveTask(@ModelAttribute Task task) {
+        taskRepository.save(task);
+        return "redirect:/tasks";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        return taskRepository.findById(id)
-            .map(task -> {
-                taskRepository.delete(task);
-                return ResponseEntity.noContent().build();
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        return taskRepository.findById(id)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.notFound().build());
+    // Show edit form
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid task ID: " + id));
+        model.addAttribute("task", task);
+        return "edit-task";
     }
 
+    // Update task
+    @PostMapping("/update/{id}")
+    public String updateTask(@PathVariable Long id, @ModelAttribute Task updatedTask) {
+        Task existing = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid task ID: " + id));
+        existing.setTitle(updatedTask.getTitle());
+        existing.setCompleted(updatedTask.isCompleted());
+        taskRepository.save(existing);
+        return "redirect:/tasks";
+    }
+
+    // Toggle completion
+    @PostMapping("/toggle")
+    public String toggleTask(@RequestParam Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid task ID: " + id));
+        task.setCompleted(!task.isCompleted());
+        taskRepository.save(task);
+        return "redirect:/tasks";
+    }
+
+    // Delete task
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable Long id) {
+        taskRepository.deleteById(id);
+        return "redirect:/tasks";
+    }
 }

@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Task Organizer</title>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <h1>Task List</h1>
-        <ul>
-            <li th:each="task : ${tasks}">
-                <span th:text="${task.title}"></span>
-                (<span th:text="${task.completed} ? 'Completed' : 'Pending'" ></span>)
-            </li>"
-        </ul>
-    </body>
+<head><meta charset="UTF-8"><title>Home</title></head>
+<body>
+  <h1>Welcome to Task Organizer</h1>
+  <a href="/tasks">View Tasks</a>
+</body>
 </html>
